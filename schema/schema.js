@@ -1,4 +1,6 @@
 const graphql = require('graphql')
+const User = require('../models/user.js')
+const Message = require('../models/message.js')
 
 const { 
       GraphQLObjectType, 
@@ -6,23 +8,9 @@ const {
       GraphQLSchema,
       GraphQLID,
       GraphQLInt,
-      GraphQLList
+      GraphQLList,
+      GraphQLBoolean,
       } = graphql
-
-let users = [
-   {id: "1", name_full: "Kate", org_name: "Kate Inc."},
-   {id: "2", name_full: "Ben", org_name: "Ben Inc."},
-   {id: "3", name_full: "Islay", org_name: "Islay Inc."}
-]
-
-let messages = [
-   {id: "10", message: "Hi there!", user_id: "1"},
-   {id: "20", message: "I'm smart!", user_id: "2"},
-   {id: "30", message: "I'm the best!", user_id: "3"},
-   {id: "40", message: "Hallo there!", user_id: "1"},
-   {id: "50", message: "I'm dumb!", user_id: "2"},
-   {id: "60", message: "I'm the worst!", user_id: "3"},
-]
 
 const UserType = new GraphQLObjectType({
    name: 'User',
@@ -33,10 +21,10 @@ const UserType = new GraphQLObjectType({
       messages: {
          type: new GraphQLList(MessageType),
          resolve(parent, arg) {
-            let messageList = messages.filter(message => {
-               return parent.id === message.user_id
-            })
-            return messageList
+            // let messageList = messages.filter(message => {
+            //    return parent.id === message.user_id
+            // })
+            // return messageList
          }
       }
    })
@@ -50,10 +38,10 @@ const MessageType = new GraphQLObjectType({
       user_id: {
          type: UserType,
          resolve(parent, arg) {
-            let user = users.find(user => {
-               return parent.user_id === user.id
-            })
-            return user
+            // let user = users.find(user => {
+            //    return parent.user_id === user.id
+            // })
+            // return user
          }
       },
    })
@@ -66,39 +54,75 @@ const RootQuery = new GraphQLObjectType ({
          type: UserType,
          args: {id: {type: GraphQLID}},
          resolve(parent, args) {
-         //code to get code from our DB
-         let user = users.filter(user => {
-            return user.id === args.id
-            })
-         return user[0]
+         // let user = users.filter(user => {
+         //    return user.id === args.id
+         //    })
+         // return user[0]
          }
       },
       message: {
          type: MessageType,
          args: {id: {type: GraphQLID}},
          resolve(parent, args) {
-         //code to get code from our DB
-         let message = messages.find(message => {
-            return message.id === args.id
-            })
-         return message
+         // let message = messages.find(message => {
+         //    return message.id === args.id
+         //    })
+         // return message
          }
       },
       users: {
          type: new GraphQLList(UserType),
          resolve(parent, args) {
-            return users
+            // return users
          }
       },
       messages: {
          type: new GraphQLList(MessageType),
          resolve(parent, args) {
-            return messages
+            // return messages
          }
       },
    }
 })
 
+const Mutation = new GraphQLObjectType ({
+   name: 'Mutation',
+   fields: {
+      addUser: {
+         type: UserType,
+         args: {
+            password: {type: GraphQLString},
+            name_full: {type: GraphQLString},
+            email: {type: GraphQLString},
+            org_name: {type: GraphQLString},
+            current_year_tax: {type: GraphQLInt},
+            current_year_energy_cost: {type: GraphQLInt},
+            roof_square_footage: {type: GraphQLInt},
+            projected_energy_annual_kW: {type: GraphQLInt},
+            match_program: {type: GraphQLBoolean},
+            match_alerts: {type: GraphQLBoolean}
+         },
+         resolve(parent, args) {
+            console.log(args)
+            let user = new User({
+               password: args.password,
+               name_full: args.name_full,
+               email: args.email,
+               org_name: args.org_name,
+               current_year_tax: args.current_year_tax,
+               current_year_energy_cost: args.current_year_energy_cost,
+               roof_square_footage: args.roof_square_footage,
+               projected_energy_annual_kW: args.projected_energy_annual_kW,
+               match_program: args.match_program,
+               match_alerts: args.match_alerts,
+            })
+            return user.save();
+         }
+      }
+   }
+})
+
 module.exports = new GraphQLSchema ({
-   query: RootQuery
+   query: RootQuery,
+   mutation: Mutation
 })

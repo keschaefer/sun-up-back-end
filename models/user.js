@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const UserSchema = new Schema({
+const userSchema = new Schema({
    password: String,
    name_full: String,
    email: String,
@@ -14,5 +14,5 @@ const UserSchema = new Schema({
    match_alerts: Boolean
 })
 
-module.exports = mongoose.model('Users', UserSchema)
+module.exports = mongoose.model('User', userSchema)
 
