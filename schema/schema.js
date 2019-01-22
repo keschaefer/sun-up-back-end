@@ -16,15 +16,20 @@ const UserType = new GraphQLObjectType({
    name: 'User',
    fields: () => ({
       id: {type: GraphQLID},
+      password: {type: GraphQLString},
       name_full: {type: GraphQLString},
+      email: {type: GraphQLString},
       org_name: {type: GraphQLString},
+      current_year_tax: {type: GraphQLInt},
+      current_year_energy_cost: {type: GraphQLInt},
+      roof_square_footage: {type: GraphQLInt},
+      projected_energy_annual_kW: {type: GraphQLInt},
+      match_program: {type: GraphQLBoolean},
+      match_alerts: {type: GraphQLBoolean},
       messages: {
          type: new GraphQLList(MessageType),
          resolve(parent, arg) {
-            // let messageList = messages.filter(message => {
-            //    return parent.id === message.user_id
-            // })
-            // return messageList
+            return Message.find({user_id: parent.id})
          }
       }
    })
@@ -34,14 +39,12 @@ const MessageType = new GraphQLObjectType({
    name: 'Message',
    fields: () => ({
       id: {type: GraphQLID},
-      message: {type: GraphQLString},
+      message_content: {type: GraphQLString},
+      message_date: {type: GraphQLInt},
       user_id: {
          type: UserType,
          resolve(parent, arg) {
-            // let user = users.find(user => {
-            //    return parent.user_id === user.id
-            // })
-            // return user
+            return User.findById(parent.user_id)
          }
       },
    })
@@ -54,32 +57,26 @@ const RootQuery = new GraphQLObjectType ({
          type: UserType,
          args: {id: {type: GraphQLID}},
          resolve(parent, args) {
-         // let user = users.filter(user => {
-         //    return user.id === args.id
-         //    })
-         // return user[0]
+            return User.findById(args.id)
          }
       },
       message: {
          type: MessageType,
          args: {id: {type: GraphQLID}},
          resolve(parent, args) {
-         // let message = messages.find(message => {
-         //    return message.id === args.id
-         //    })
-         // return message
+            return Message.findById(args.id)
          }
       },
       users: {
          type: new GraphQLList(UserType),
          resolve(parent, args) {
-            // return users
+            return User.find({})
          }
       },
       messages: {
          type: new GraphQLList(MessageType),
          resolve(parent, args) {
-            // return messages
+            return Message.fin({})
          }
       },
    }
@@ -103,7 +100,6 @@ const Mutation = new GraphQLObjectType ({
             match_alerts: {type: GraphQLBoolean}
          },
          resolve(parent, args) {
-            console.log(args)
             let user = new User({
                password: args.password,
                name_full: args.name_full,
@@ -117,6 +113,22 @@ const Mutation = new GraphQLObjectType ({
                match_alerts: args.match_alerts,
             })
             return user.save();
+         }
+      },
+      addMessage: {
+         type: MessageType,
+         args: {
+            user_id: {type: GraphQLID},
+            message_content: {type: GraphQLString},
+            message_date: {type: GraphQLInt},
+         },
+         resolve(parent, args) {
+            let message = new Message({
+               message_content: args.message_content,
+               message_date: args.message_date,
+               user_id: args.user_id,
+            })
+            return message.save();
          }
       }
    }
