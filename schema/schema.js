@@ -83,7 +83,19 @@ const RootQuery = new GraphQLObjectType ({
             })
          return message
          }
-      }
+      },
+      users: {
+         type: new GraphQLList(UserType),
+         resolve(parent, args) {
+            return users
+         }
+      },
+      messages: {
+         type: new GraphQLList(MessageType),
+         resolve(parent, args) {
+            return messages
+         }
+      },
    }
 })
 
