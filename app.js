@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 4000
 const graphqlHTTP = require('express-graphql')
+const schema = require('./schema/schema')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 // const queries = require('./queries')
@@ -9,54 +10,13 @@ const cors = require('cors')
 const listener = () => console.log(`Listening on port ${port}`)
 
 app.use(bodyParser.json())
-
 app.use(bodyParser.urlencoded({extended: false}))
-
 app.use(cors())
 
 app.use('/graphql', graphqlHTTP({
-
+   schema,
+   graphiql: true
 }))
-
-
-
-// const typeDefs = `
-// type Query {
-//   info: String!
-//   feed: [Link!]!
-// }
-
-// type Link {
-//   id: ID!
-//   description: String!
-//   url: String!
-// }
-// `
-// let links = [{
-//    id: 'link-0',
-//    url: 'www.howtographql.com',
-//    description: 'Fullstack tutorial for GraphQL'
-//  }]
- 
-//  const resolvers = {
-//    Query: {
-//      info: () => `This is the API of a Hackernews Clone`,
-//      // 2
-//      feed: () => links,
-//    },
-//    // 3
-//    Link: {
-//      id: (parent) => parent.id,
-//      description: (parent) => parent.description,
-//      url: (parent) => parent.url,
-//    }
-//  }
-
-
-// const server = new GraphQLServer({
-//    typeDefs,
-//    resolvers,
-// })
 
 // server.start(() => console.log(`Server is running on http://localhost:4000`))
 
