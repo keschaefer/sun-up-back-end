@@ -10,16 +10,17 @@ const {
       GraphQLInt,
       GraphQLList,
       GraphQLBoolean,
+      GraphQLNonNull,
       } = graphql
 
 const UserType = new GraphQLObjectType({
    name: 'User',
    fields: () => ({
       id: {type: GraphQLID},
-      password: {type: GraphQLString},
-      name_full: {type: GraphQLString},
-      email: {type: GraphQLString},
-      org_name: {type: GraphQLString},
+      password: {type: new GraphQLNonNull(GraphQLString)},
+      name_full: {type: new GraphQLNonNull(GraphQLString)},
+      email: {type: new GraphQLNonNull(GraphQLString)},
+      org_name: {type: new GraphQLNonNull(GraphQLString)},
       current_year_tax: {type: GraphQLInt},
       current_year_energy_cost: {type: GraphQLInt},
       roof_square_footage: {type: GraphQLInt},
@@ -76,7 +77,7 @@ const RootQuery = new GraphQLObjectType ({
       messages: {
          type: new GraphQLList(MessageType),
          resolve(parent, args) {
-            return Message.fin({})
+            return Message.find({})
          }
       },
    }
