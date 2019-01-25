@@ -119,7 +119,7 @@ const Mutation = new GraphQLObjectType ({
       addMessage: {
          type: MessageType,
          args: {
-            user_id: {type: GraphQLID},
+            user_id: {type: GraphQLString},
             message_content: {type: GraphQLString},
             message_date: {type: GraphQLInt},
          },
@@ -127,6 +127,7 @@ const Mutation = new GraphQLObjectType ({
             let message = new Message({
                message_content: args.message_content,
                message_date: args.message_date,
+               // user_id: ObjectId(args.user_id)
                user_id: args.user_id,
             })
             return message.save();
