@@ -116,6 +116,30 @@ const Mutation = new GraphQLObjectType ({
             return user.save();
          }
       },
+      updateUser: {
+         type: UserType,
+         args: {
+            id: {type: GraphQLID},
+            current_year_tax: args.current_year_tax,
+            current_year_energy_cost: args.current_year_energy_cost,
+            roof_square_footage: args.roof_square_footage,
+            projected_energy_annual_kW: args.projected_energy_annual_kW,
+            match_program: args.match_program,
+            match_alerts: args.match_alerts
+         }, 
+         resolve(parent, args) {
+            let user = new User({
+               id: args.current_user_id,
+               current_year_tax: args.current_year_tax,
+               current_year_energy_cost: args.current_year_energy_cost,
+               roof_square_footage: args.roof_square_footage,
+               projected_energy_annual_kW: args.projected_energy_annual_kW,
+               match_program: args.match_program,
+               match_alerts: args.match_alerts,
+            })
+            return user.save()
+         }
+      },
       addMessage: {
          type: MessageType,
          args: {
