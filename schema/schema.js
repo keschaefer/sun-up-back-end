@@ -17,10 +17,11 @@ const UserType = new GraphQLObjectType({
    name: 'User',
    fields: () => ({
       id: {type: GraphQLID},
-      password: {type: new GraphQLNonNull(GraphQLString)},
-      name_full: {type: new GraphQLNonNull(GraphQLString)},
-      email: {type: new GraphQLNonNull(GraphQLString)},
-      org_name: {type: new GraphQLNonNull(GraphQLString)},
+      password: {type: GraphQLString},
+      name_full: {type: GraphQLString},
+      email: {type: GraphQLString},
+      org_name: {type: GraphQLString},
+      // org_name: {type: new GraphQLNonNull(GraphQLString)},
       current_year_tax: {type: GraphQLInt},
       current_year_energy_cost: {type: GraphQLInt},
       roof_square_footage: {type: GraphQLInt},
@@ -120,16 +121,15 @@ const Mutation = new GraphQLObjectType ({
          type: UserType,
          args: {
             id: {type: GraphQLID},
-            current_year_tax: args.current_year_tax,
-            current_year_energy_cost: args.current_year_energy_cost,
-            roof_square_footage: args.roof_square_footage,
-            projected_energy_annual_kW: args.projected_energy_annual_kW,
-            match_program: args.match_program,
-            match_alerts: args.match_alerts
+            current_year_tax: {type: GraphQLInt},
+            current_year_energy_cost: {type: GraphQLInt},
+            roof_square_footage: {type: GraphQLInt},
+            projected_energy_annual_kW: {type: GraphQLInt},
+            match_program: {type: GraphQLBoolean},
+            match_alerts: {type: GraphQLBoolean}
          }, 
          resolve(parent, args) {
             let user = new User({
-               id: args.current_user_id,
                current_year_tax: args.current_year_tax,
                current_year_energy_cost: args.current_year_energy_cost,
                roof_square_footage: args.roof_square_footage,
