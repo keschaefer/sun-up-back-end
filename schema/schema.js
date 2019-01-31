@@ -17,11 +17,10 @@ const UserType = new GraphQLObjectType({
    name: 'User',
    fields: () => ({
       id: {type: GraphQLID},
-      password: {type: GraphQLString},
-      name_full: {type: GraphQLString},
-      email: {type: GraphQLString},
-      org_name: {type: GraphQLString},
-      // org_name: {type: new GraphQLNonNull(GraphQLString)},
+      password: {type: new GraphQLNonNull(GraphQLString)},
+      name_full: {type: new GraphQLNonNull(GraphQLString)},
+      email: {type: new GraphQLNonNull(GraphQLString)},
+      org_name: {type: new GraphQLNonNull(GraphQLString)},
       current_year_tax: {type: GraphQLInt},
       current_year_energy_cost: {type: GraphQLInt},
       roof_square_footage: {type: GraphQLInt},
@@ -151,7 +150,6 @@ const Mutation = new GraphQLObjectType ({
             let message = new Message({
                message_content: args.message_content,
                message_date: args.message_date,
-               // user_id: ObjectId(args.user_id)
                user_id: args.user_id,
             })
             return message.save();
